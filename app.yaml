@@ -1,0 +1,19 @@
+application: isombytbot
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /CronJob
+  script: cron.app
+
+- url: /QueueJob
+  script: queue.app
+
+- url: /Test
+  script: queue.app
