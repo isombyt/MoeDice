@@ -9,11 +9,18 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /setup\.html
+  static_files: setup.html
+  upload: setup\.html
+
 - url: /CronJob
   script: cron.app
 
 - url: /QueueJob
   script: queue.app
+
+- url: /Setup
+  script: setup.app
 
 - url: /Test
   script: queue.app
