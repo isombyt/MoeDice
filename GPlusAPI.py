@@ -7,6 +7,13 @@ import time
 
 getTime=lambda:int((time.time()*1000-time.timezone)%1000000)
 
+def parseJSON(json):
+    json=json.replace("[,","[None,")
+    json=json.replace(",,",",None,")
+    json=json.replace(",,",",None,")
+    json=json.replace(",]",",None]")
+    return eval(json[6:])
+
 class User:
 
     def __init__(self,email="",passwd=""):
@@ -26,7 +33,6 @@ class User:
         _GALX="""name="GALX"\n         value="(.+?)">"""
         params["dsh"]=re.findall(_dsh,data,re.S)[0]
         params["GALX"]=re.findall(_GALX,data,re.S)[0]
-
         return params
     
     def login(self):
@@ -38,12 +44,12 @@ class User:
         login_url = 'https://accounts.google.com/ServiceLoginAuth'
         login_data = urllib.urlencode(params)
         login_headers = {'Referer':'https://accounts.google.com/ServiceLoginAuth',}
-        print self.request(login_url, login_data, login_headers)
+        return self.request(login_url, login_headers, login_data)
 
-    def request(self,url,headers={},params={},method="POST"):
+    def request(self,url,headers={},params="",method="POST"):
         if 'User-Agent' not in headers:
             headers['User-Agent']='Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1171.0 Safari/537.1'
-        if 'Content-type' not in headers:
+        if ('Content-type' not in headers) and False:
             headers['Content-type']="application/x-www-form-urlencoded;charset=utf-8"
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
         urllib2.install_opener(opener)
@@ -57,12 +63,20 @@ class User:
 
     def getNotification(self):
         url='https://plus.google.com/_/notifications/getnotificationsdata?rt=j&_reqid=%s'%getTime()
-        return self.request(url,method="GET")
+        return parseJSON(self.request(url,method="GET"))
 
-    def updateReadTime(self):
+    def updateReadTime(self,time):
         url="https://plus.google.com/_/notifications/updatelastreadtime?rt=j&_reqid=%s"%getTime()
         print url
-        return self.request(url)
+        return parseJSON(self.request(url))
+
+    def comment(self,**agrs):
+        #didn't finished
+        return
+
+def parseNotification(self,noti=None):
+    import marshal
+    noti=marshal.load(file("g:\\data"))
 
 if __name__=="__main__":
     u=User("email","passwd")
@@ -70,5 +84,4 @@ if __name__=="__main__":
     cookie=u.dumpCookie()
     u=User()
     u.loadCookie(cookie)
-    print u.getNotification()
-    print u.updateReadTime()
+    notis=u.getNotification()

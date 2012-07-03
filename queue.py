@@ -6,12 +6,13 @@ import re
 import sys
 import urllib
 import urllib2
-
+import marshal
 
 class QueueHandler(webapp.RequestHandler):
 
     def post(self):
-        dn=self.request.get('data')
+        notiStr=self.request.get('noti')
+        noti=marshal.loads(notiStr)
 
 
 class TestHandler(webapp.RequestHandler):

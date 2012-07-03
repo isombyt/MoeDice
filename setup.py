@@ -11,7 +11,7 @@ class SetupHandler(webapp.RequestHandler):
     def post(self):
         cookie=self.request.get('cookie')
         if len(cookie)>0:
-            dbCookie=ConfigStore.get_or_insert("Cookie","")
+            dbCookie=ConfigStore.get_or_insert("Cookie",data="")
             dbCookie.data=cookie
             dbCookie.put()
         else:
