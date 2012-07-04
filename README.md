@@ -1,6 +1,6 @@
 MoeDice
 =======
 
-We are try to write a bot framework for Google Plus.
+We are trying to write a bot runing on Google App Engine for Google Plus.
 
 and this is an example as a Dicing Bot.
