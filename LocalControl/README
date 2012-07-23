@@ -1,0 +1,12 @@
+bot.py:
+	your char bot
+config.py:
+	configs including you account info and you shared secret
+GPlusAPI.py:
+	used to login google and get account info
+Interface.py:
+	including some functions corresponding to the file with a same name in dir server/
+StrCookieJar.py:
+	a Cookie class which stores cookies in a string.forget
+update.py:
+	a script upload your bot and configurations to the server
