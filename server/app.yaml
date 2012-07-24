@@ -1,0 +1,20 @@
+application: isombytbot
+version: 2
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /CheckNotification
+  script: CheckNotification.app
+
+- url: /ParseNotification
+  script: ParseNotification.app
+
+- url: /Interface.*
+  script: Interface.app
+

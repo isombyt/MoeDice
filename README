@@ -1,0 +1,38 @@
+MoeDice
+=======
+
+We are trying to write a bot runing on Google App Engine for Google Plus.
+
+and including an example to make it a Dicing Bot.
+
+MoeDice is disigned in two parts,and that's why the codes was plase into two folders:
+1.server
+folder 'server' is the GAE app you need to upload to Google
+this part is used to check Google Plus notifications update and call your bot to parse the posts.
+it may be not a good idea to edit this part at most of the time.
+but if you need to make hacking or fix some bugs,just do it.
+
+2.LocalControl
+folder 'LocalControl' includes a SDK-like tool that you can easily only upload you bot to you GAE app.
+in this part you only need to edit config.py which include all your configurations.
+
+and bot.py which is your bot.problems in writing the bot.py you can check the file bot-format.py 
+which promote the formats and essentials in writing bot.py .
+and for more ,we have a bot-example.py .it is a dicing bot example.
+
+WARNING
+=======
+bot.py,config.py and app.yaml are just configuration files.so you have no need to release modifications of this two file.
+
+read the "README" file in each folder for more information.
+
+Usetage
+=======
+server:
+1.edit app.yaml
+2.use google app engine SDK to upload it to google's server
+LocalControl
+1.make sure your app has been upload to google correctly
+2.config the config.py
+3.write a bot.py or you can copy bot-example.py as bot.py
+4.run 'update.py'

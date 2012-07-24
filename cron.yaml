@@ -1,4 +1,0 @@
-cron:
-- description: every 1 min job
-  url: /CronJob
-  schedule: every 1 minutes

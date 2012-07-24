@@ -1,0 +1,12 @@
+*.yaml:
+	Google app Engine configuration file(s)
+favicon.ico:
+	oh,dont care about this.you can just replace it with any you like
+GPlusAPI.py:
+	the functions using to get notifications and comment to a post
+Interface.py:
+	this is the interfaces to get config and bot from LocalControl
+ParseNotification.py:
+	processing single comment,it will call the func which match the rule
+StrCookieJar.py:
+	a Cookie class which stores cookies in a string.forget it

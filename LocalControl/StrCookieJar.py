@@ -14,10 +14,10 @@ class StrCookieJar(CookieJar):
         """
         CookieJar.__init__(self, policy)
         if cookieStr is not None:
-            if 1:
+            try:
                 cookieStr+""
                 self.load(cookieStr)
-            else:
+            except:
                 raise ValueError("cookieStr must be string-like")
 
     def dump(self, ignore_discard=True, ignore_expires=True):
