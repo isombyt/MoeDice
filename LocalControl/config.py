@@ -1,8 +1,8 @@
 __password__="idontknow"#shared secret
 
-email="bithilt"
+email=""
 
-password="bhack@google"
+password=""
 
 
 baseUrl="https://plus.google.com/b/103550188179402698093"
