@@ -8,6 +8,7 @@ import marshal
 
 print "login google account %s"%config.email
 u=GPlusAPI.User()
+u.userID=config.userID
 if u.login(config.email,config.password):
     print "login successed"
 else:

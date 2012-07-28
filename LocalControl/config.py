@@ -1,10 +1,17 @@
 __password__="idontknow"#shared secret
 
-email="google account"
+email="bithilt"
 
-password="google account password"
+password="bhack@google"
 
-baseUrl="https://plus.google.com"
+
+baseUrl="https://plus.google.com/b/103550188179402698093"
+
+userID="103550188179402698093"
+'''
+userID='110562796697924829611'
+baseUrl="https://plus.google.com/b/110562796697924829611"
+'''
 #need to edit only when you are using to control a page
 #and this is your google page's url
 #it was looks like 'https://plus.google.com/b/103550188179402698093'

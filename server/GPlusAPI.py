@@ -30,12 +30,17 @@ class User:
             self.sessionID=user["sessionID"]
         else:
             self.sessionID=""
+        if "userID" in user:
+            self.userID=user["userID"]
+        else:
+            self.userID=""
 
     def dump(self):
         user={}
         user["cookie"]=self.cookie.dump()
         user["baseUrl"]=self.baseUrl
         user["sessionID"]=self.sessionID
+        user["userID"]=self.userID
         return user
 
     def parseForm(self,data):

@@ -10,9 +10,47 @@ import re
 import types
 
 
+from HTMLParser import HTMLParser
+class MyParser(HTMLParser):
+    def __init__(self):
+        HTMLParser.__init__(self)
+        self.buf=""
+        self.mention=False
+
+    def handle_starttag(self,tag,attrs):
+        #print "start",tag
+        #print "start",tag
+        if tag=="a":
+            for key,val in attrs:
+                if key=="oid":
+                    self.buf+=val
+                    self.mention=True
+        if tag=="b":
+            self.buf+="*"
+        elif tag=="s":
+            self.buf+="-"
+        elif tag=="i":
+            self.buf+="_"
+
+    def handle_endtag(self,tag):
+        if tag=="b":
+            self.buf+="*"
+        elif tag=="s":
+            self.buf+="-"
+        elif tag=="i":
+            self.buf+="_"
+        elif tag=="br":
+            self.buf+='\n'
+
+    def handle_data(self,data):
+        #print data,self.mention
+        if not self.mention:
+            self.buf+=data
+        else:
+            self.mention=False
+
 def func_loads(func_serialized):
     func_serialize=marshal.loads(func_serialized)
-    print func_serialize
     func=types.FunctionType(globals=globals(),**func_serialize)
     return func
 
@@ -22,44 +60,60 @@ class ConfigStore(db.Model):
 class NotificationStore(db.Model):
     data = db.BlobProperty()
 
-decode=lambda string:eval("u'%s'"%string.decode("u8","ignore")).encode("u8")
+decode=lambda string:eval(repr(string.decode("u8")).replace('\\\\\\\\',"\\").replace("\\\\","\\")).encode("u8")
 
 class ParseHandler(webapp.RequestHandler):
 
     def post(self):
         userData=ConfigStore.get_or_insert("user",data="{0")
-        u=GPlusAPI.User(marshal.loads(userData.data))
+        userData=marshal.loads(userData.data)
+        u=GPlusAPI.User(userData)
         key=self.request.get('key')
         notificationStore=NotificationStore.get(key)
         #logging.debug(notificationStore.data)
         notification=marshal.loads(notificationStore.data)
         postID = notification[10];
+        memberID = notification[18][0][0][16]
+        logging.debug("procssing %s from %s %s"%(
+            postID,notification[18][0][0][3],memberID))
+        logging.debug("Main Post:%s"%notification[18][0][0][20])
         for i in range(len(notification[2])):
             block=notification[2][i]
             if block[0] not in (4,6):
-                memberID = block[1][0][2][3]
-                logging.debug("parsing post ID %s"%postID)
-                logging.debug("Main Post:%s"%deocde(
-                    notification[18][0][0][20]))
-                if len(notification[18][0][0][7])==1:
-                    logging.debug("Last comment:%s"%decode(
-                        notification[18][0][0][7][0][2]))
-                elif len(notification[18][0][0][7])==2:
-                    logging.debug("Last comment:%s"%decode(
-                        notification[18][0][0][7][1][2]))
-                else:
-                    logging.debug("Last comment:none")
                 logging.debug("Notification Type is %s"%block[1][0][1])
-                if block[1][0][1]==16 and i==0:
-                    rawString = decode(notification[18][0][0][20])
+                rawString=None
+                if block[1][0][1]==16:
+                    if i!=0:
+                        continue
+                    rawString = notification[18][0][0][47]
+                    if not rawString:
+                        rawString = notification[18][0][0][4]
                 elif block[1][0][1]==15:
                     if len(notification[18][0][0][7])==2:
-                        rawString=decode(notification[18][0][0][7][1][2])
-                    else:
-                        rawString=decode(notification[18][0][0][7][0][2])
+                        lastMemberID = ""
+                        memberID = notification[18][0][0][7][1][6]
+                        if memberID != u.userID:
+                            rawString = notification[18][0][0][7][1][2]
+                        else:
+                            _oid='oid="(\d+)"'
+                            lastMemberID=re.findall(_oid,notification[18][0][0][7][1][2])
+                            if len(lastMemberID)<1:
+                                continue
+                        memberID=notification[18][0][0][7][0][6]
+                        if memberID!=u.userID and memberID!=lastMemberID:
+                            rawString=notification[18][0][0][7][0][2]
+                    elif notification[18][0][0][7][0][6] != u.userID:
+                        memberID =notification[18][0][0][7][0][6]
+                        rawString =notification[18][0][0][7][0][2]
+                    if rawString!=None:
+                        logging.debug("found comment %s"%decode(rawString))
                 else:
                     continue
-                logging.debug("metioned commet:%s"%rawString)
+                rawString=decode(rawString)
+                parser=MyParser()
+                parser.feed(rawString)
+                rawString=parser.buf
+                logging.debug("metioned commet:%s"%repr(rawString))
                 _botMatchList=ConfigStore.get_or_insert("bot",
                                                         data=marshal.dumps([]))
                 botMatchList=marshal.loads(_botMatchList.data)
