@@ -115,10 +115,3 @@ class User:
             ]
         params={"f.req":json.dumps(commentData)}
         return parseJSON(self.request(url,params=params))
-
-
-if __name__=="__main__":
-    u=User()
-    u.login("bithilt","bhack@google")
-    userData=u.dump()
-    notis=u.getNotification()
