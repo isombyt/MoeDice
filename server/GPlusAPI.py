@@ -92,7 +92,10 @@ class User:
     def getNotification(self):
         url=self.baseUrl+'/_/notifications/getnotificationsdata?rt=j&_reqid=%s'%getTime()
         logging.debug(url)
-        return parseJSON(self.request(url,method="GET"))
+        params={
+            "f.req":"[null,[],5,null,[],null,true,[],null,null,null,null,2]"
+        }
+        return parseJSON(self.request(url,params=params,method="POST"))
 
     def updateReadTime(self,updateTime):
         url=self.baseUrl+"/_/notifications/updatelastreadtime?rt=j&_reqid=%s"%getTime()
