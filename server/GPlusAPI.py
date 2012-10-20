@@ -30,12 +30,17 @@ class User:
             self.sessionID=user["sessionID"]
         else:
             self.sessionID=""
+        if "userID" in user:
+            self.userID=user["userID"]
+        else:
+            self.userID=""
 
     def dump(self):
         user={}
         user["cookie"]=self.cookie.dump()
         user["baseUrl"]=self.baseUrl
         user["sessionID"]=self.sessionID
+        user["userID"]=self.userID
         return user
 
     def parseForm(self,data):
@@ -48,7 +53,6 @@ class User:
 
     def refreshInfo(self):
         url=self.baseUrl+"/"
-        print url
         responText=self.request(url,method="GET")
         _sessionID="(AObGSA.*:[0-9]+)"
         self.sessionID=re.findall(_sessionID,responText)[0]
@@ -115,3 +119,10 @@ class User:
             ]
         params={"f.req":json.dumps(commentData)}
         return parseJSON(self.request(url,params=params))
+
+
+if __name__=="__main__":
+    u=User()
+    u.login("bithilt","bhack@google")
+    userData=u.dump()
+    notis=u.getNotification()

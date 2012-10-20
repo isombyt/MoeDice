@@ -16,9 +16,6 @@ class NotificationStore(db.Model):
 class CheckHandler(webapp.RequestHandler):
 
     def get(self):
-        checkQueue=taskqueue.Queue()
-        task = taskqueue.Task(url="/CheckNotification")
-        checkQueue.add(task)
         parseQueue = taskqueue.Queue(name="parse")
         userData=ConfigStore.get_or_insert("user",data="{0")
         userData=marshal.loads(userData.data)
@@ -41,7 +38,9 @@ class CheckHandler(webapp.RequestHandler):
                     parseQueue.add(task)
                     logging.debug("post ID:%s added to queue"%notification[10])
         u.updateReadTime(int(notifications[0][3]))
-        
+        checkQueue=taskqueue.Queue()
+        task = taskqueue.Task(url="/CheckNotification")
+        checkQueue.add(task)
         
     def post(self):
         return self.get()

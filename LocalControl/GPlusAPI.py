@@ -30,12 +30,17 @@ class User:
             self.sessionID=user["sessionID"]
         else:
             self.sessionID=""
+        if "userID" in user:
+            self.userID=user["userID"]
+        else:
+            self.userID=""
 
     def dump(self):
         user={}
         user["cookie"]=self.cookie.dump()
         user["baseUrl"]=self.baseUrl
         user["sessionID"]=self.sessionID
+        user["userID"]=self.userID
         return user
 
     def parseForm(self,data):
@@ -48,7 +53,6 @@ class User:
 
     def refreshInfo(self):
         url=self.baseUrl+"/"
-        print url
         responText=self.request(url,method="GET")
         _sessionID="(AObGSA.*:[0-9]+)"
         self.sessionID=re.findall(_sessionID,responText)[0]
@@ -92,7 +96,10 @@ class User:
     def getNotification(self):
         url=self.baseUrl+'/_/notifications/getnotificationsdata?rt=j&_reqid=%s'%getTime()
         logging.debug(url)
-        return parseJSON(self.request(url,method="GET"))
+        params={
+            "f.req":"[null,[],5,null,[],null,true,[],null,null,null,null,2]"
+        }
+        return parseJSON(self.request(url,params=params,method="POST"))
 
     def updateReadTime(self,updateTime):
         url=self.baseUrl+"/_/notifications/updatelastreadtime?rt=j&_reqid=%s"%getTime()
